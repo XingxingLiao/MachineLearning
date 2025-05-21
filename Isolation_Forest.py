@@ -6,7 +6,7 @@ from sklearn.preprocessing import StandardScaler
 
 # 1. 加载数据
 # file_path = "/home/xingxin/3d_data_with_outliers.csv"
-file_path = "test3.csv"
+file_path = "mqtt_data.csv"
 df = pd.read_csv(file_path)
 
 # 2. 标准化特征
@@ -52,7 +52,7 @@ df['is_outlier'] = np.where(anomaly_scores < threshold, -1, 1)
 # 6. 输出异常点（包含异常分数）
 outliers = df[df['is_outlier'] == -1]
 print("异常点信息（包含异常分数）:")
-print(outliers[['timestamp','x', 'y', 'z', 'anomaly_score', 'is_outlier']].round(4))  # 保留4位小数
+print(outliers[['time','x', 'y', 'z', 'anomaly_score', 'is_outlier']].round(4))  # 保留4位小数
 
 print(f"\n异常点总数: {len(outliers)}")
 # 7. 3D可视化
