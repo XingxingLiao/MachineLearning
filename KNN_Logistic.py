@@ -9,7 +9,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import classification_report, confusion_matrix, roc_curve, auc, precision_recall_curve
 
 # 1. 读取数据
-df = pd.read_csv("/home/xingxin/Downloads/Isolation_point/random_xyz_data.csv")  # 👈 替换为你的 CSV 文件
+df = pd.read_csv("/home/xingxin/Downloads/Isolation_point/random_xyz_data.csv")  # 
 
 # 2. 提取特征和标签
 X = df[['X', 'Y', 'Z']]  # 三轴数据
