@@ -137,3 +137,58 @@ def judge_fit(train_acc, test_acc, model_name):
 print("\n==== 模型拟合情况分析 ====")
 judge_fit(knn_train_acc, knn_test_acc, "KNN")
 judge_fit(lr_train_acc, lr_test_acc, "Logistic Regression")
+
+from sklearn.ensemble import VotingClassifier
+
+# 13. 用调参后的最佳模型构建 VotingClassifier（soft voting）
+voting_clf = VotingClassifier(
+    estimators=[('knn', knn_best), ('lr', lr_best)],
+    voting='soft'  # 软投票，结合预测概率
+)
+
+# 14. 训练融合模型（用临时训练集）
+voting_clf.fit(X_temp_train, y_temp_train)
+
+# 15. 融合模型预测测试集
+voting_pred = voting_clf.predict(X_test)
+
+# 16. 打印融合模型分类报告和混淆矩阵
+print("\nVotingClassifier (soft voting) 分类报告:")
+print(classification_report(y_test, voting_pred))
+
+voting_cm = confusion_matrix(y_test, voting_pred)
+
+# 17. 可视化融合模型混淆矩阵
+plt.figure(figsize=(5, 4))
+sns.heatmap(voting_cm, annot=True, fmt="d", cmap="Greens", xticklabels=["Normal", "Abnormal"], yticklabels=["Normal", "Abnormal"])
+plt.title("VotingClassifier Confusion Matrix")
+plt.xlabel("Predicted Label")
+plt.ylabel("True Label")
+plt.show()
+
+# 18. 计算并绘制融合模型 ROC 曲线
+fpr_voting, tpr_voting, _ = roc_curve(y_test, voting_clf.predict_proba(X_test)[:, 1])
+roc_auc_voting = auc(fpr_voting, tpr_voting)
+
+plt.figure(figsize=(8, 6))
+plt.plot(fpr_knn, tpr_knn, label=f"KNN (AUC = {roc_auc_knn:.2f})")
+plt.plot(fpr_lr, tpr_lr, label=f"Logistic Regression (AUC = {roc_auc_lr:.2f})")
+plt.plot(fpr_voting, tpr_voting, label=f"VotingClassifier (AUC = {roc_auc_voting:.2f})", linewidth=2, linestyle='--')
+plt.plot([0, 1], [0, 1], linestyle="--", color="gray")
+plt.xlabel("False Positive Rate")
+plt.ylabel("True Positive Rate")
+plt.title("ROC Curve Comparison")
+plt.legend()
+plt.show()
+
+# 19. 训练集预测及准确率对比（判断过拟合）
+voting_train_pred = voting_clf.predict(X_temp_train)
+voting_train_acc = accuracy_score(y_temp_train, voting_train_pred)
+voting_test_acc = accuracy_score(y_test, voting_pred)
+
+print("\nVotingClassifier 训练集准确率: {:.4f}".format(voting_train_acc))
+print("VotingClassifier 测试集准确率: {:.4f}".format(voting_test_acc))
+print("VotingClassifier 差值（train - test）: {:.4f}".format(voting_train_acc - voting_test_acc))
+
+# 20. 判断拟合情况
+judge_fit(voting_train_acc, voting_test_acc, "VotingClassifier")
