@@ -9,10 +9,10 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import classification_report, confusion_matrix, roc_curve, auc, precision_recall_curve
 
 # 1. 读取数据
-df = pd.read_csv("/home/xingxin/Downloads/Isolation_point/random_xyz_data.csv")  # 👈 替换为你的 CSV 文件
+df = pd.read_csv("data.csv")  # 👈 替换为你的 CSV 文件
 
 # 2. 提取特征和标签
-X = df[['X', 'Y', 'Z']]  # 三轴数据
+X = df[['x', 'y', 'z']]  # 三轴数据
 y = df['label']         # 0（正常）或 1（异常）
 
 # 3. 标准化（重要！）
@@ -30,7 +30,7 @@ knn.fit(X_train, y_train)
 knn_pred = knn.predict(X_test)
 
 # 打印分类报告
-print("\n📊 KNN 分类结果：")
+print("\n KNN 分类结果：")
 print(classification_report(y_test, knn_pred))
 
 # 计算混淆矩阵
@@ -44,7 +44,7 @@ lr.fit(X_train, y_train)
 lr_pred = lr.predict(X_test)
 
 # 打印分类报告
-print("\n📊 逻辑回归分类结果：")
+print("\n逻辑回归分类结果：")
 print(classification_report(y_test, lr_pred))
 
 # 计算混淆矩阵

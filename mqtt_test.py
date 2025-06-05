@@ -29,10 +29,10 @@ def open_csv_file():
 
 def on_connect(client_obj, userdata, flags, rc):
     if rc == 0:
-        print("连接MQTT成功")
+        print("CONNECT MQTT SUCCESSFULLY")
         client_obj.subscribe(MQTT_TOPIC)
     else:
-        print(f"连接失败，错误码：{rc}")
+        print(f"CONNECT FAILED，CODE：{rc}")
 
 def on_message(client_obj, userdata, msg):
     global line_count, client, csv_file, csv_writer
